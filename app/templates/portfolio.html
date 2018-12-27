@@ -1,0 +1,51 @@
+<section id="single-page-slider" class="no-margin">
+    <div class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="item active">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="center gap fade-down section-heading no-display animated fadeInDown appear">
+                                <h2 class="main-title">Our Works</h2>
+                                <hr>
+                                <p>Of an or game gate west face shed. ﻿no great but music too old found arose.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/.item-->
+        </div>
+        <!--/.carousel-inner-->
+    </div>
+    <!--/.carousel-->
+</section>
+<div id="content-wrapper" style="margin-bottom: 415px;">
+	 <section id="portfolio" class="grid white">
+	 	<div class="gap"></div>
+	 	<div class="center gap fade-down section-heading no-display animated fadeInDown appear">
+	 		<h2 class="main-title">
+	 			Examples Of Excellence
+	 		</h2>
+	 		<hr/>
+	 		<p>
+	 			She evil face fine calm have now. Separate screened he outweigh of distance landlord.
+	 		</p>
+	 	</div>
+        {% for a in  port_data %}
+        <figure class="effect-portfolio wow fadeIn" data-wow-duration="{{a[5]}}"> <!-- Portfolio {{counter}} -->
+        
+        {% set counter = a[6] %}
+        <img src="static/vb/img/thumbnails/{{a[4]}}" alt="{{a[1]}}"/> <!-- Your image here -->
+        <figcaption> <!-- Caption -->
+          <h3>{{a[1]}}</h3>
+          <p>{{a[2]}}</p>
+          {% for item in range(1,counter+1) %}
+              <a title="{{a[1]}}" href="static/vb/img/portfolio/{{a[3]}}/{{item}}.jpg" data-lightbox-gallery="{{a[4]}}" data-lightbox-hidpi="static/vb/img/portfolio/{{a[3]}}/{{item}}.jpg"></a>
+          {% endfor %} <!-- Larger image popup -->
+        </figcaption> <!-- End caption --> 
+         
+      </figure> <!-- End portfolio {{counter}}-->
+      {% endfor %} 
+    </section> <!-- End Portfolio Section -->
+</div>

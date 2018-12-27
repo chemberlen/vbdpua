@@ -1,0 +1,75 @@
+.bubbleBottom-wrapper {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 46%;
+		z-index: 999999;
+	}
+
+	.bubbleTop-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 999999;
+	}
+
+	.bubbleTop-wrapper2 {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 999999;
+		    background: red;
+	}
+
+	.bubbleInfo {
+		position: relative;
+		padding: 3px;
+	}
+
+	.popup {
+		position: absolute;
+		display: none;
+		background: rgba(0, 0, 0, 0.31);
+		/* keeps the popup hidden if no JS available */
+		width: 100%;
+		height: 100px;
+	}
+
+	.popupbtn {
+		position: absolute;
+		display: none;
+		background: rgba(0, 0, 0, 0.1);
+		/* keeps the popup hidden if no JS available */
+		left: -20px;
+		top: -20px;
+	}
+
+	.trigger {
+		width: 100%;
+		height: 40px;
+		opacity: 0.1;
+		background-color: white;
+		text-align: center;
+		outline: : 2px solid green;
+	}
+	.triggerbtn {
+		width: 50px;
+		height: 40px;
+		opacity: 0.1;
+		background-color: white;
+		text-align: center;
+		outline: : 2px solid green;
+	}
+
+	.trigger p {
+		/*opacity: 1;*/
+		color: black;
+		margin: 0;
+	}
+
+	.mouseovered {
+		background: rebeccapurple !important;
+	    opacity: 0.5;
+	}
