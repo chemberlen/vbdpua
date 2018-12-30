@@ -1,18 +1,27 @@
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, g,jsonify, current_app
+from flask import render_template, flash, redirect, url_for, send_from_directory, request, g,jsonify, current_app
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
-from app.main.forms import EditProfileForm, PostForm, SearchForm
+from app.main.forms import EditProfileForm, PostForm, SearchForm, PhotoForm
 from app.models import User, Post
 from app.translate import translate
 from app.main import bp
+from werkzeug.utils import secure_filename
 import os
 import io
 
 APP_ROOT = os.path.abspath('/home/teofedryn/microblog')   # refers to application_top
-APP_TEMPLATES = os.path.join(APP_ROOT, 'app/templates')
+APP_ROOT_BP = os.path.abspath('/home/teofedryn/microblog/app')   # refers to application_top
+APP_TEMPLATES_FULL = os.path.join(APP_ROOT, 'app/templates')
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'app/uploads')
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+def joinurl(baseurl, filename):
+    urldata = os.path.join(baseurl,filename)
+    return urldata
+
 
 
 @bp.before_app_request
@@ -30,15 +39,6 @@ def before_request():
 # @login_required
 def index():
     return render_template("index.html")
-
-def read_contpage(path):
-
-    filepath = os.path.join(APP_TEMPLATES, path)
-
-    with io.open(filepath,"r", encoding="utf-8") as rd:
-        page = rd.read()
-        rd.close()
-    return page
 
 
 # @bp.route('/', methods=['GET', 'POST'])
@@ -67,19 +67,20 @@ def blog():
                            prev_url=prev_url)
 
 
-@bp.route('/explore')
-# @login_required
-def explore():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.explore', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('main.explore', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('blog.html', title=_('Explore'),
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
+@bp.route('/uploads', methods=['GET', 'POST'])
+def uploads():
+    form = PhotoForm()
+    if form.validate_on_submit():
+        f = form.photo.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(
+            APP_ROOT_BP, 'uploads', filename
+        ))
+        return redirect(url_for('main.uploads'))
+
+    return render_template('uploads.html', form=form)
+
+
 
 
 @bp.route('/user/<username>')

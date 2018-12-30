@@ -30,12 +30,14 @@
 {% endblock %}
 
 <body>
+  	<!--/header-->
+    {% include 'navbar.html' %}
+    <!--body data-->
+    {% block content %}
 
-{% block content -%}
+	{# application content needs to be provided in the app_content block #}
+	{% block app_content %}{% endblock %}
 
-
-{%- endblock content %}
-{% include '_footer.html' %}
-
+    {% endblock %}
 </body>
 </html>
