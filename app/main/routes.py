@@ -9,13 +9,13 @@ from app.models import User, Post
 from app.translate import translate
 from app.main import bp
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import CombinedMultiDict
+
 import os
 import io
 
 APP_ROOT = os.path.abspath('/home/teofedryn/microblog')   # refers to application_top
-APP_ROOT_BP = os.path.abspath('/home/teofedryn/microblog/app')   # refers to application_top
-APP_TEMPLATES_FULL = os.path.join(APP_ROOT, 'app/templates')
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'app/uploads')
+APP_ROOT_BP = os.path.abspath('/home/teofedryn/microblog/app')   # refers to bluprint application_top
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 def joinurl(baseurl, filename):
@@ -69,12 +69,12 @@ def blog():
 
 @bp.route('/uploads', methods=['GET', 'POST'])
 def uploads():
-    form = PhotoForm()
+    form = PhotoForm(CombinedMultiDict((request.files, request.form)))
     if form.validate_on_submit():
         f = form.photo.data
         filename = secure_filename(f.filename)
-        f.save(os.path.join(
-            APP_ROOT_BP, 'uploads', filename
+        f.save(os.path.join(current_app.instance_path
+            , 'uploads', filename
         ))
         return redirect(url_for('main.uploads'))
 
