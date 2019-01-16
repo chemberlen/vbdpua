@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, send_from_directory, request, g,jsonify, current_app
 from flask_login import current_user, login_required
+# from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
@@ -69,6 +70,9 @@ def blog():
 
 @bp.route('/uploads', methods=['GET', 'POST'])
 def uploads():
+#    photos = UploadSet('photos', IMAGES)
+#    configure_uploads(app, photos)
+ #   patch_request_class(app)
     form = PhotoForm(CombinedMultiDict((request.files, request.form)))
     if form.validate_on_submit():
         f = form.photo.data
