@@ -29,8 +29,8 @@ images = UploadSet('images', IMAGES)
 def create_app(config_class=Config):
     app = Flask(__name__, static_url_path='/app/static',instance_path='/home/teofedryn/microblog/app')
     app.config.from_object(config_class)
-    app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd()
-#    configure_uploads(app, images)
+    # app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd()
+    # configure_uploads(app, images)
 
 
     db.init_app(app)

@@ -69,6 +69,7 @@ def blog():
 
 
 @bp.route('/uploads', methods=['GET', 'POST'])
+@login_required
 def uploads():
 #    photos = UploadSet('photos', IMAGES)
 #    configure_uploads(app, photos)
