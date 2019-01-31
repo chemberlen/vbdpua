@@ -1,6 +1,6 @@
 from flask import request
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
+# from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
@@ -39,7 +39,7 @@ class SearchForm(FlaskForm):
             kwargs['csrf_enabled'] = False
         super(SearchForm, self).__init__(*args, **kwargs)
 
-class PhotoForm(FlaskForm):
-    photo = FileField(validators=[FileRequired()])
-    submit = SubmitField(_l('Submit'))
+# class PhotoForm(FlaskForm):
+#     photo = FileField(validators=[FileRequired()])
+#     submit = SubmitField(_l('Submit'))
 

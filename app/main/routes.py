@@ -1,29 +1,24 @@
+from flask import send_from_directory
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, send_from_directory, request, g,jsonify, current_app
+from flask import render_template, flash, redirect, url_for, request, g,jsonify, current_app
 from flask_login import current_user, login_required
-# from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
-from app.main.forms import EditProfileForm, PostForm, SearchForm, PhotoForm
+from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.models import User, Post
 from app.translate import translate
 from app.main import bp
 from werkzeug.utils import secure_filename
-from werkzeug.datastructures import CombinedMultiDict
-
 import os
-import io
 
 APP_ROOT = os.path.abspath('/home/teofedryn/microblog')   # refers to application_top
 APP_ROOT_BP = os.path.abspath('/home/teofedryn/microblog/app')   # refers to bluprint application_top
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 def joinurl(baseurl, filename):
     urldata = os.path.join(baseurl,filename)
     return urldata
-
-
 
 @bp.before_app_request
 def before_request():
@@ -68,34 +63,77 @@ def blog():
                            prev_url=prev_url)
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @bp.route('/uploads', methods=['GET', 'POST'])
 @login_required
 def uploads():
-#    photos = UploadSet('photos', IMAGES)
-#    configure_uploads(app, photos)
- #   patch_request_class(app)
-    form = PhotoForm(CombinedMultiDict((request.files, request.form)))
-    if form.validate_on_submit():
-        f = form.photo.data
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(current_app.instance_path
-            , 'uploads', filename
-        ))
-        return redirect(url_for('main.uploads'))
+    username = current_user.username
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('main.uploaded_file',
+                                    filename=filename))
+    return render_template('uploads.html', username=username)
 
-    return render_template('uploads.html', form=form)
+@bp.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'],
+                               filename)
+
+# @bp.route('/uploads/', methods=['GET', 'POST'])
+# @login_required
+# def uploads():
+# #    photos = UploadSet('photos', IMAGES)
+# #    configure_uploads(app, photos)
+#  #   patch_request_class(app)
+#     form = PhotoForm(CombinedMultiDict((request.files, request.form)))
+#     if form.validate_on_submit():
+#         f = form.photo.data
+#         filename = secure_filename(f.filename)
+#         f.save(current_app.config['UPLOAD_FOLDER'], filename)
+#         return redirect(url_for('main.uploaded_file',filename=filename))
+#
+#     return render_template('uploads.html',form=form)
+#
+# @bp.route('/uploads/<path:filename>')
+# def uploaded_file(filename):
+#     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 
-
-
-@bp.route('/user/<username>')
+@bp.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    # page = request.args.get('page', 1, type=int)
-    # posts = user.posts.order_by(Post.timestamp.desc()).paginate(page, current_app.config['POSTS_PER_PAGE'], False)
-    # next_url = url_for('main.user', username=user.username,page=posts.next_num) if posts.has_next else None
-    # prev_url = url_for('main.user', username=user.username,page=posts.prev_num) if posts.has_prev else None
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('main.user', username=user.username))
+
     return render_template('user.html', user=user)
 
 

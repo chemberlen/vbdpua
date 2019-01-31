@@ -5,7 +5,10 @@ Blog VBDPUP creat post | Blog creat new post
 {% endblock %}
 
 {% block content %}
+{% include 'modal_upload.html' %}
+
 <div id="content-wrapper" style="margin-top: 50px;">
+            <section id="" class="white">
     <div class="container">
          {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -16,7 +19,10 @@ Blog VBDPUP creat post | Blog creat new post
         {% endwith %}
         <table class="table table-hover">
             <tr>
-                <td width="256px"><img src="{{ user.avatar(256) }}"></td>
+                <td width="256px"><img src="{{ user.avatar(256) }}">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploading">Upload photo</button>
+                </td>
                 <td>
                     <h1>{{ _('User') }}: {{ user.username }}</h1>
                     {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
@@ -35,22 +41,40 @@ Blog VBDPUP creat post | Blog creat new post
             </tr>
         </table>
     </div>
+            </section>
 </div>
-<!--{% for post in posts %}-->
-<!--{% include '_post.html' %}-->
-<!--{% endfor %}-->
-<!--<nav aria-label="...">-->
-<!--<ul class="pager">-->
-<!--<li class="previous{% if not prev_url %} disabled{% endif %}">-->
-<!--<a href="{{ prev_url or '#' }}">-->
-<!--<span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}-->
-<!--</a>-->
-<!--</li>-->
-<!--<li class="next{% if not next_url %} disabled{% endif %}">-->
-<!--<a href="{{ next_url or '#' }}">-->
-<!--{{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>-->
-<!--</a>-->
-<!--</li>-->
-<!--</ul>-->
-<!--</nav>-->
+
+{% include 'footer.html' %}
+<!-- About Section
+    ================================================== -->
+    <section id="bsocials">
+      <div class="container wow bounceIn" data-wow-delay="0.8s">
+        <p>To get the latest update of me and my works</p>
+        <p> >> <span class="follow"> Follow Me </span>  &lt;&lt; </p>
+        <ol class="social">
+          <li><a href="#"><i class="fa fa-facebook fa-2x"></i></a></li> <!-- Change # with your facebook link -->
+          <li><a href="#"><i class="fa fa-twitter fa-2x"></i></a></li> <!-- Change # with your twitter link -->
+          <li><a href="#"><i class="fa fa-behance fa-2x"></i></a></li> <!-- Change # with your behance link -->
+          <li><a href="#"><i class="fa fa-dribbble fa-2x"></i></a></li> <!-- Change # with your dribbble link -->
+          <li><a href="#"><i class="fa fa-flickr fa-2x"></i></a></li> <!-- Change # with your flickr link -->
+          <li><a href="#"><i class="fa fa-google-plus fa-2x"></i></a></li> <!-- Change # with your googleplus link -->
+          <li><a href="#"><i class="fa fa-instagram fa-2x"></i></a></li> <!-- Change # with your instagram link -->
+        </ol>
+      </div>
+    </section>
+    <div id="footer-nav">  <!-- Copyright notice on the bottom -->
+	<span>© 2014 Awesome Phtography. All Rights Reserved.</span>
+    </div>
+
+<script src="{{ url_for('static', filename='impact/js/jquery-1.11.0.js') }}"></script>
+
+<script src="{{ url_for('static', filename='impact/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='impact/js/SmoothScroll.js') }}"></script>
+<script src="{{bootstrap_find_resource('jquery.easing.min.js', cdn='jquery')}}"></script>
+
+<script src="{{ url_for('static', filename='impact/js/cbpAnimatedHeader.js') }}"></script>
+<script src="{{ url_for('static', filename='impact/js/classie.js') }}"></script>
+<script src="{{ url_for('static', filename='impact/js/init.js') }}"></script>
+<script src="{{ url_for('static', filename='impact/js/contact.js') }}"></script>
+<script src="{{ url_for('static', filename='impact/js/main.js') }}"></script>
 {% endblock %}
