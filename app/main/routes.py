@@ -1,20 +1,18 @@
-from flask import send_from_directory
 from datetime import datetime
-from flask import render_template, flash, redirect, url_for, request, g,jsonify, current_app
+from flask import render_template, flash, redirect, url_for, request, g,jsonify, current_app, send_from_directory
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
-from app import db
+from app import db, Config
 from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.models import User, Post
 from app.translate import translate
 from app.main import bp
-from werkzeug.utils import secure_filename
 import os
+
 
 APP_ROOT = os.path.abspath('/home/teofedryn/microblog')   # refers to application_top
 APP_ROOT_BP = os.path.abspath('/home/teofedryn/microblog/app')   # refers to bluprint application_top
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 def joinurl(baseurl, filename):
     urldata = os.path.join(baseurl,filename)
@@ -63,78 +61,59 @@ def blog():
                            prev_url=prev_url)
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and \
+#            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route('/uploads', methods=['GET', 'POST'])
-@login_required
-def uploads():
-    username = current_user.username
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('main.uploaded_file',
-                                    filename=filename))
-    return render_template('uploads.html', username=username)
+# @bp.route('/uploads/', methods=['GET', 'POST'])
+# @login_required
+# def uploads():
+#     username = current_user.username
+#     form = PhotoForm()
+#     if request.method == 'POST':
+#         filename = images.save(request.files['photo_file'])
+#         url = images.url(filename)
+#         current_user.image_url = url              #current_app.config['UPLOAD_FOLDER'] +  url
+#         db.session.commit()
+#         flash(_('Your changes have been saved.'))
+#         return redirect(url_for('main.user',username=current_user.username,image_url = current_user.image_url))
+
+        # # check if the post request has the file part
+        # if 'file' not in request.files:
+        #     flash('No file part')
+        #     return redirect(request.url)
+        # file = request.files['file']
+        # # if user does not select file, browser also
+        # # submit a empty part without filename
+        # if file.filename == '':
+        #     flash('No selected file')
+        #     return redirect(request.url)
+        # if file and allowed_file(file.filename):
+        #     filename = secure_filename(file.filename)
+        #     file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        #     return redirect(url_for('main.uploaded_file',
+        #                             filename=filename))
+    # return redirect(url_for('main.user',username=current_user.username,image = current_user.image_url))
 
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'],
                                filename)
 
-# @bp.route('/uploads/', methods=['GET', 'POST'])
-# @login_required
-# def uploads():
-# #    photos = UploadSet('photos', IMAGES)
-# #    configure_uploads(app, photos)
-#  #   patch_request_class(app)
-#     form = PhotoForm(CombinedMultiDict((request.files, request.form)))
-#     if form.validate_on_submit():
-#         f = form.photo.data
-#         filename = secure_filename(f.filename)
-#         f.save(current_app.config['UPLOAD_FOLDER'], filename)
-#         return redirect(url_for('main.uploaded_file',filename=filename))
-#
-#     return render_template('uploads.html',form=form)
-#
-# @bp.route('/uploads/<path:filename>')
-# def uploaded_file(filename):
-#     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
-
 
 @bp.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('main.user', username=user.username))
+    if request.method == 'POST' and 'file' in request.files:
+        filename = current_app.photos.save(request.files['photo'])
+        img_path = current_app.photos.path(filename)
+        user.image_url = img_path
+        db.session.commit()
+        flash(_('Your changes have been saved.'))
+        return redirect(url_for('main.user', username=user.username))
 
-    return render_template('user.html', user=user)
+    return render_template('user.html', user=user, image = user.image_url)
 
 
 @bp.route('/creat_post', methods=['GET', 'POST'])

@@ -9,13 +9,18 @@
         </button>
       </div>
       <div class="modal-body">
-            <form method=post enctype=multipart/form-data>
-                <div class="form-group">
+          <form action="{{ url_for('main.user',username=user.username) }}" method="post" enctype="multipart/form-data">
+              <div class="form-group">
                     <label>Accepted Formats JPG,PNG</label>
-                    <input type=file name=file>
-                    <input type=submit value=Upload>
-                </div>
-            </form>
+                    <input type="file" class="" name="photo">
+              <hr/>
+                    <input type="submit" class="btn-send btn-danger" value="Upload">
+              </div>
+
+
+
+          </form>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

@@ -11,6 +11,7 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from elasticsearch import Elasticsearch
 from config import Config
+from flask_uploads import UploadSet, IMAGES, configure_uploads
 
 
 db = SQLAlchemy()
@@ -22,14 +23,14 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
+images = UploadSet('images', IMAGES)
 
 
 def create_app(config_class=Config):
     app = Flask(__name__, static_url_path='/app/static',instance_path='/home/teofedryn/microblog/app')
     app.config.from_object(config_class)
     # app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd()
-    # configure_uploads(app, images)
-
+    configure_uploads(app, images)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -79,6 +80,7 @@ def create_app(config_class=Config):
 
         app.logger.setLevel(logging.INFO)
         app.logger.info('Microblog startup')
+
 
     return app
 

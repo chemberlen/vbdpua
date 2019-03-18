@@ -1,10 +1,13 @@
-from flask import request
+from app import request
 from flask_wtf import FlaskForm
-# from flask_wtf.file import FileField, FileRequired
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
 from app.models import User
+
+
+
 
 
 class EditProfileForm(FlaskForm):
@@ -40,6 +43,10 @@ class SearchForm(FlaskForm):
         super(SearchForm, self).__init__(*args, **kwargs)
 
 # class PhotoForm(FlaskForm):
-#     photo = FileField(validators=[FileRequired()])
-#     submit = SubmitField(_l('Submit'))
+    # photo = StringField('Photo Title', validators=[DataRequired()])
+    # description = StringField('Photo Description', validators=[DataRequired()])
+    # file = FileField('file', validators=[FileRequired(), FileAllowed(images, 'Images only!')])
+    # submit = SubmitField(_l('Submit'))
+    # photo = FileField(validators=[FileRequired()])
+    # submit = SubmitField(_l('Submit'))
 

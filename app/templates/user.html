@@ -19,12 +19,18 @@ Blog VBDPUP creat post | Blog creat new post
         {% endwith %}
         <table class="table table-hover">
             <tr>
-                <td width="256px"><img src="{{ user.avatar(256) }}">
+                <h1>{{ _('User') }}: {{ user.username }}</h1>
+                <td width="256px">
+                        {% if user.image_url %}
+                          <img {{ user.image_url }} alt="{{ user.image_url }}" style="width:600px;height:450px;">
+                        {% else %}
+                        <b>Note stored!</b>
+                        {% endif %}
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploading">Upload photo</button>
                 </td>
                 <td>
-                    <h1>{{ _('User') }}: {{ user.username }}</h1>
+
                     {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
                     {% if user.last_seen %}
                     <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
